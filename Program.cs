@@ -8,6 +8,7 @@ string str = "パスワード";
 
 Console.WriteLine("Hello, World!");
 
+
 while (true)
 {
     Console.WriteLine(

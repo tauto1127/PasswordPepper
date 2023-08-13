@@ -16,7 +16,14 @@ public class UserOperation
         _pass = Console.ReadLine();
         _user.CreatedDateTime = DateTime.Now;
         _user.PasswordSalt = PasswordUtil.getInitialPasswordSalt(_user.CreatedDateTime.ToString());
-        _user.PasswordHash = PasswordUtil.getPasswordHashFromSalt(_user.PasswordSalt, _pass);
+        _user.PasswordHash = PasswordUtil.getPasswordHashFromPepper(_user.PasswordSalt, _pass);
+        Console.WriteLine("保存されるパスワードハッシュは");
+        PasswordUtil.putHash(_user.PasswordHash);
+        Console.WriteLine("パスワードソルとは：");
+        PasswordUtil.putHash(_user.PasswordSalt);
+        _user.PasswordHash = PasswordUtil.getPasswordHashFromPepper(_user.PasswordSalt, _pass);
+        Console.WriteLine("パスワードハッシュにコメ");
+        PasswordUtil.putHash(_user.PasswordHash);
         using (var _context = new UserContext())
         {
             _context.User.Add(_user);
@@ -52,13 +59,10 @@ public class UserOperation
             var _user = _context.User.SingleOrDefault(x => x.Name.Equals(name));
             if (_user != null)
             {
-                var passwordHash = PasswordUtil.getPasswordHashFromSalt(_user.PasswordSalt, pass);
-                _context.Add(new User()
-                {
-                    Name = name + "パスワード確認", PasswordHash = passwordHash, PasswordSalt = new byte[0],
-                    CreatedDateTime = DateTime.Now
-                });
-                _context.SaveChanges();
+                var passwordHash = PasswordUtil.getPasswordHashFromPepper(_user.PasswordSalt, pass);
+                PasswordUtil.putHash(passwordHash);
+                Console.WriteLine("パスワードソルトは");
+                PasswordUtil.putHash(_user.PasswordSalt);
             }
             else
             {
