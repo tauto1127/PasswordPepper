@@ -16,8 +16,8 @@ public class UserOperation
         Console.WriteLine("パスワードを入力してください");
         _pass = Console.ReadLine();
         _user.CreatedDateTime = DateTime.Now;
-        _user.PasswordSalt = PasswordUtil.getInitialPasswordSalt(_user.CreatedDateTime.ToString());
-        _user.PasswordHash = PasswordUtil.getPasswordHashFromPepper(_user.PasswordSalt, _pass);
+        _user.PasswordSalt = PasswordUtil.GetInitialPasswordSalt(_user.CreatedDateTime.ToString());
+        _user.PasswordHash = PasswordUtil.GetPasswordHashFromPepper(_user.PasswordSalt, _pass, PasswordSalt.Pepper);
         using (var _context = new UserContext())
         {
             _context.User.Add(_user);
@@ -53,7 +53,7 @@ public class UserOperation
             var _user = _context.User.SingleOrDefault(x => x.Name.Equals(name));
             if (_user != null)
             {
-                var passwordHash = PasswordUtil.getPasswordHashFromPepper(_user.PasswordSalt, pass);
+                var passwordHash = PasswordUtil.GetPasswordHashFromPepper(_user.PasswordSalt, pass, PasswordPepper.PasswordSalt.Pepper);
                 if (Encoding.Unicode.GetString(passwordHash).Equals(Encoding.Unicode.GetString(_user.PasswordHash)))
                 {
                     return true;
