@@ -8,8 +8,24 @@ string salt = "塩あまり使わないので減らない";
 
 Console.WriteLine("Hello, World!");
 
+while (true)
+{
+    Console.WriteLine("操作番号を入力してください");
+    int input;
+    while (true)
+    {
+        input = Int16.Parse(Console.ReadLine());
+        switch (input)
+        {
+            case 0:
+                
+                break;
+        }
+    }
+    
+}
 //パスワードハッシュ計算
-byte[] getPasswordHashWithSalt(string pass)
+byte[] getPasswordHashWithSalt(string pass, string salt)
 {
     using (var hmac = new HMACSHA256())
     {
@@ -30,7 +46,7 @@ byte[] getPasswordHashWithSalt(string pass)
 byte[] getNormalPasswordHash(string pass)
 {
     var hmac = new HMACSHA256();
-    var passwordByte = Encoding.Unicode.GetBytes(str);
+    var passwordByte = Encoding.Unicode.GetBytes(pass);
     return hmac.ComputeHash(passwordByte);
 }
 
