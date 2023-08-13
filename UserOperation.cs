@@ -44,4 +44,28 @@ public class UserOperation
         }
 
     }
+
+    public static bool Login(string name, string pass)
+    {
+        using (var _context = new UserContext())
+        {
+            var _user = _context.User.SingleOrDefault(x => x.Name.Equals(name));
+            if (_user != null)
+            {
+                var passwordHash = PasswordUtil.getPasswordHashFromSalt(_user.PasswordSalt, pass);
+                _context.Add(new User()
+                {
+                    Name = name + "パスワード確認", PasswordHash = passwordHash, PasswordSalt = new byte[0],
+                    CreatedDateTime = DateTime.Now
+                });
+                _context.SaveChanges();
+            }
+            else
+            {
+                Console.WriteLine("ユーザーが見つからない");
+            }
+
+            return false;
+        }
+    }
 }
