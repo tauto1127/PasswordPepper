@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices.ComTypes;
+using System.Text;
 
 namespace PasswordPepper.Model;
 
@@ -17,13 +18,6 @@ public class UserOperation
         _user.CreatedDateTime = DateTime.Now;
         _user.PasswordSalt = PasswordUtil.getInitialPasswordSalt(_user.CreatedDateTime.ToString());
         _user.PasswordHash = PasswordUtil.getPasswordHashFromPepper(_user.PasswordSalt, _pass);
-        Console.WriteLine("保存されるパスワードハッシュは");
-        PasswordUtil.putHash(_user.PasswordHash);
-        Console.WriteLine("パスワードソルとは：");
-        PasswordUtil.putHash(_user.PasswordSalt);
-        _user.PasswordHash = PasswordUtil.getPasswordHashFromPepper(_user.PasswordSalt, _pass);
-        Console.WriteLine("パスワードハッシュにコメ");
-        PasswordUtil.putHash(_user.PasswordHash);
         using (var _context = new UserContext())
         {
             _context.User.Add(_user);
@@ -60,9 +54,10 @@ public class UserOperation
             if (_user != null)
             {
                 var passwordHash = PasswordUtil.getPasswordHashFromPepper(_user.PasswordSalt, pass);
-                PasswordUtil.putHash(passwordHash);
-                Console.WriteLine("パスワードソルトは");
-                PasswordUtil.putHash(_user.PasswordSalt);
+                if (Encoding.Unicode.GetString(passwordHash).Equals(Encoding.Unicode.GetString(_user.PasswordHash)))
+                {
+                    return true;
+                }
             }
             else
             {
