@@ -4,15 +4,19 @@ namespace PasswordPepper.Model;
 
 public class UserContext : DbContext
 {
-    /*
-    public UserContext(DbContextOptions options) : base(options)
+    public string DbPath { get; set; }
+    public UserContext()
     {
-        
-    }*/
-    public UserContext(){}
+        var path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-    public DbSet<User> Users { get; set; }
+        DbPath = $"{path}{Path.DirectorySeparatorChar}users.db";
+    }
+    public DbSet<User>? User { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
-        optionsBuilder.UseSqlite("Data Source=user.db");
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
+        //optionsBuilder.UseSqlite(@"Data Source=user.db"); なぜかこれだとUserテーブルが見つからない データベース消した時もこのエラーだから、データベースが見つからないだけかも
+        optionsBuilder.UseSqlite($@"Data Source={DbPath}");
+    }
 }
