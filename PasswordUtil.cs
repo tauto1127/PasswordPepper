@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace ClassLibrary1
+namespace PasswordUtil
 {
     public class PasswordUtil
     {
